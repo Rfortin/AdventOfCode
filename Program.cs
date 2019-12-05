@@ -28,6 +28,11 @@ namespace AdventOfCode
             //Q4
             Console.WriteLine("Jour 4: " + GetResponseQ4(165432, 707912));
             Console.WriteLine("Jour 4: " + GetResponseQ4Part2(165432, 707912));
+            
+            //Q5
+            string[] lines5 = File.ReadAllLines("../../files/Q5.txt");
+            Console.WriteLine("Jour 5: " + GetResponseQ5(lines5[0]));
+            Console.WriteLine("Jour 5 Partie 2: " + GetResponseQ5Part2(lines5[0]));
 
             Console.ReadLine();
         }
@@ -377,6 +382,104 @@ namespace AdventOfCode
             }
 
             return reponse;
+        }
+        
+        public static int GetResponseQ5(string fichier)
+        {
+            var file = fichier.Split(',');
+
+            int[] intArray = Array.ConvertAll(file, delegate (string s) { return int.Parse(s); });
+
+            for (var i = 0; i < intArray.Count();)
+            {
+                var opcode = intArray[i].ToString();
+
+                if (opcode.Count() < 5)
+                {
+                    var zero = "";
+                    for (var j = 0; j < 5 - opcode.Count(); j++)
+                    {
+                        zero += "0";
+                    }
+                    opcode = zero + opcode;
+                }
+
+                switch (opcode.Substring(3))
+                {
+                    case "01":
+                        var valeur1 = 0;
+                        var valeur2 = 0;
+                        var position = 0;
+
+                        if (opcode.Substring(2,1) == "0")
+                        {
+                            valeur1 = intArray[intArray[i + 1]];
+                        }
+                        else
+                        {
+                            valeur1 = intArray[i + 1];
+                        }
+
+                        if (opcode.Substring(1, 1) == "0")
+                        {
+                            valeur2 = intArray[intArray[i + 2]];
+                        }
+                        else
+                        {
+                            valeur2 = intArray[i + 2];
+                        }
+
+                        position = intArray[i + 3];
+
+                        intArray[position] = valeur1 + valeur2;
+                        i = i + 4;
+                        break;
+                    case "02":
+                        var valeur1Mult = 0;
+                        var valeur2Mult = 0;
+                        var positionMult = 0;
+
+                        if (opcode.Substring(2, 1) == "0")
+                        {
+                            valeur1Mult = intArray[Math.Abs(intArray[i + 1])];
+                        }
+                        else
+                        {
+                            valeur1Mult = intArray[i + 1];
+                        }
+
+                        if (opcode.Substring(1, 1) == "0")
+                        {
+                            valeur2Mult = intArray[Math.Abs(intArray[i + 2])];
+                        }
+                        else
+                        {
+                            valeur2Mult = intArray[i + 2];
+                        }
+
+                        positionMult = intArray[i + 3];
+
+                        intArray[positionMult] = valeur1Mult * valeur2Mult;
+                        i = i + 4;
+                        break;
+                    case "03":
+                        intArray[intArray[i + 1]] = 1;
+                        i = i + 2;
+                        break;
+                    case "04":
+                        Console.WriteLine("OUTPUT:" + intArray[intArray[i + 1]]);
+                        i = i + 2;
+                        break;
+                }
+
+                if (opcode == "00099")
+                {
+                    break;
+                }
+            }
+
+
+            return intArray[0];
         }
     }
 }
